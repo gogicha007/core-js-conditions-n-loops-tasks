@@ -344,8 +344,31 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  const strLength = (s) => {
+    let l = 0;
+    while (s[l] !== undefined) {
+      l += 1;
+    }
+    return l;
+  };
+  const len = strLength(arr);
+  for (let i = 1; i < len; i += 1) {
+    let left = 0;
+    for (let j = i - 1; j >= 0; j -= 1) {
+      left += arr[j];
+    }
+
+    let right = 0;
+    for (let k = i + 1; k < len; k += 1) {
+      right += arr[k];
+    }
+
+    if (left === right) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 /**
@@ -369,8 +392,39 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const arr = [];
+  for (let i = 0; i < size; i += 1) {
+    arr[i] = [];
+  }
+  let row = 0;
+  let col = 0;
+  let rowEnd = size - 1;
+  let colEnd = size - 1;
+  let value = 1;
+  while (col <= colEnd && row <= rowEnd) {
+    for (let i = col; i <= colEnd; i += 1) {
+      arr[row][i] = value;
+      value += 1;
+    }
+    row += 1;
+    for (let i = row; i <= rowEnd; i += 1) {
+      arr[i][colEnd] = value;
+      value += 1;
+    }
+    colEnd -= 1;
+    for (let i = colEnd; i >= col; i -= 1) {
+      arr[rowEnd][i] = value;
+      value += 1;
+    }
+    rowEnd -= 1;
+    for (let i = rowEnd; i >= row; i -= 1) {
+      arr[i][col] = value;
+      value += 1;
+    }
+    col += 1;
+  }
+  return arr;
 }
 
 /**
@@ -388,10 +442,34 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const replicaMatrix = matrix;
+  const arrLength = (s) => {
+    let l = 0;
+    while (s[l] !== undefined) {
+      l += 1;
+    }
+    return l;
+  };
+  const arrLen = arrLength(matrix);
+  const arr = [];
+  let cols = [];
+  let subRowLen = 0;
+  for (let i = 0; i < arrLen; i += 1) {
+    subRowLen = arrLength(matrix[i]);
+    let idx = 0;
+    cols = [];
+    for (let j = subRowLen - 1; j >= 0; j -= 1) {
+      cols[idx] = matrix[j][i];
+      idx += 1;
+    }
+    arr[i] = cols;
+  }
+  for (let i = 0; i < arrLen; i += 1) {
+    replicaMatrix[i] = arr[i];
+  }
+  return arr;
 }
-
 /**
  * Sorts an array of numbers in ascending order in place.
  * Employ any sorting algorithm of your choice.
@@ -406,8 +484,34 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(array) {
+  const replicaArr = array;
+  const workArr = array;
+  const partition = (arr, low, high) => {
+    const tempArr = arr;
+    const pivot = tempArr[high];
+    let i = low - 1;
+    for (let j = low; j <= high - 1; j += 1) {
+      if (tempArr[j] < pivot) {
+        i += 1;
+        [tempArr[i], tempArr[j]] = [tempArr[j], tempArr[i]];
+      }
+    }
+    [tempArr[i + 1], tempArr[high]] = [tempArr[high], tempArr[i + 1]];
+    return i + 1;
+  };
+  function quickSort(arr, low, high) {
+    if (low >= high) return;
+    const pIdx = partition(arr, low, high);
+    quickSort(arr, low, pIdx - 1);
+    quickSort(arr, pIdx + 1, high);
+  }
+
+  quickSort(workArr, 0, workArr.length - 1);
+  for (let i = 0; i < workArr.length; i += 1) {
+    replicaArr[i] = workArr[i];
+  }
+  return workArr;
 }
 
 /**
@@ -427,8 +531,29 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  const firstChar = str[0];
+  let evens = '';
+  let odds = '';
+  let string = str;
+  let restIterations = iterations;
+  while (restIterations > 0) {
+    evens = firstChar;
+    odds = '';
+    for (let i = 1; i < str.length; i += 1) {
+      if (i % 2 === 0) {
+        evens += string[i];
+      } else {
+        odds += string[i];
+      }
+    }
+    string = `${evens}${odds}`;
+    restIterations -= 1;
+    if (string === str) {
+      restIterations = iterations % (iterations - restIterations);
+    }
+  }
+  return string;
 }
 
 /**
