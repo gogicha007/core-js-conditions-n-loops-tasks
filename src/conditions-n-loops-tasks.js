@@ -573,8 +573,49 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const numStr = `${number}`;
+  const numArr = [];
+  for (let i = 0; i < numStr.length; i += 1) {
+    numArr[i] = +numStr[i];
+  }
+  const len = numArr.length;
+
+  const theNumber = (arr) => {
+    for (let i = len - 1; i >= 0; i -= 1) {
+      if (arr[i] > arr[i - 1]) return [arr[i - 1], i];
+    }
+    return [];
+  };
+
+  const didx = theNumber(numArr);
+  if (didx.length === 0) {
+    return number;
+  }
+  const d = didx[0];
+  const idx = didx[1];
+
+  let minLeftIdx = idx;
+  for (let j = idx + 1; j < len; j += 1) {
+    if (numArr[j] > d && numArr[j] < numArr[idx]) minLeftIdx = j;
+  }
+
+  numArr[idx - 1] = numArr[minLeftIdx];
+  numArr[minLeftIdx] = d;
+
+  const slicer = (arr, start, end) => {
+    const result = [];
+    const l = !end ? arr.length : end;
+    for (let i = start; i < l; i += 1) {
+      result.push(arr[i]);
+    }
+    return result;
+  };
+
+  const frontPart = slicer(numArr, 0, idx);
+  const endPart = slicer(numArr, idx).sort();
+
+  return +[...frontPart, ...endPart].join('');
 }
 
 module.exports = {
